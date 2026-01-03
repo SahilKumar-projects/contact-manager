@@ -1,0 +1,42 @@
+.edit-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #1e4fd7;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.submit-btn:disabled {
+  background: #9ca3af;
+}

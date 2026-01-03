@@ -1,0 +1,30 @@
+.app-wrapper {
+  width: 100%;
+  padding: 12px;
+}
+
+.app-card {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.app-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+
+.app-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+
+

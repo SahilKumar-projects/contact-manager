@@ -1,0 +1,37 @@
+.table-card {
+  width: 100%;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.contact-table th,
+.contact-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.contact-table th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+.contact-table td:last-child {
+  display: flex;
+  gap: 8px;
+}
+
+
+
+

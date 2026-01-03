@@ -1,0 +1,31 @@
+.form-card {
+  width: 100%;
+}
+
+.form-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+

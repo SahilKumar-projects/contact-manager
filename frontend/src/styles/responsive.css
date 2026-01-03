@@ -1,0 +1,160 @@
+@media (max-width: 992px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-wrapper {
+    padding: 20px;
+  }
+
+  .app-card {
+    padding: 20px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pagination span {
+    order: -1;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-wrapper {
+    padding: 14px;
+  }
+
+  .app-card {
+    padding: 16px;
+  }
+
+  .contact-table {
+    font-size: 13px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-title {
+    font-size: 18px;
+  }
+}
+
+
+@media (max-width: 576px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-wrapper {
+    padding: 12px;
+  }
+
+  .app-card {
+    padding: 16px;
+  }
+
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .contact-table {
+    min-width: 100%;   
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+
+ 
+  .pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-wrapper {
+    padding: 12px;
+  }
+
+  .app-card {
+    padding: 16px;
+  }
+
+  .app-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+
+  .form-card {
+    width: 100%;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .contact-table {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-title {
+    font-size: 18px;
+  }
+
+  .form-title {
+    font-size: 16px;
+  }
+
+  th,
+  td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+@media (min-width: 900px) {
+  .app-grid {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .app-grid > * {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-table {
+    min-width: 650px;
+  }
+}
