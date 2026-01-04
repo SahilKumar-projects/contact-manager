@@ -20,6 +20,10 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error(err));
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use("/api/contacts", require("./routes/contact.routes"));
 
 const PORT = process.env.PORT || 5000;
