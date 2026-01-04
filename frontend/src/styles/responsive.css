@@ -158,3 +158,19 @@
     min-width: 650px;
   }
 }
+
+@media (max-width: 576px) {
+  .top-actions {
+    position: static;      
+    margin-bottom: 12px;     
+    justify-content: flex-start;
+  }
+
+  .theme-toggle-btn,
+  .download-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
+
+

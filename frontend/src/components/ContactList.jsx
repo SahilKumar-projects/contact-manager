@@ -3,6 +3,8 @@ import api from "../utils/api";
 import { ContactContext } from "../context/ContactContext";
 import Button from "./Button";
 import Alert from "./Alert";
+
+
 import EditContactModal from "./EditContactModal";
 
 const ITEMS_PER_PAGE = 3; 

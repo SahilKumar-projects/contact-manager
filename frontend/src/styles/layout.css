@@ -11,6 +11,7 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+   position: relative;
 }
 
 .app-title {
@@ -26,5 +27,104 @@
   gap: 24px;
 }
 
+.theme-toggle-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: background 0.2s ease;
+}
 
 
+.theme-toggle-btn:hover {
+  background-color: #1e4fd7;
+}
+
+
+
+body.dark {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+
+body.dark .app-card {
+  background-color: #1e293b;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background-color: #0f172a;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+
+body.dark .contact-table th {
+  background-color: #1e293b;
+  color: #e5e7eb;
+}
+
+body.dark .contact-table td {
+  color: #e5e7eb;
+}
+
+body.dark .contact-table tbody tr:hover {
+  background-color: #334155;
+}
+
+
+body.dark .delete-btn {
+  background-color: #b91c1c;
+}
+
+body.dark .edit-btn {
+  background-color: #1d4ed8;
+}
+
+
+body.dark .alert-success {
+  background-color: #14532d;
+  color: #dcfce7;
+}
+
+body.dark .form-error {
+  background-color: #7f1d1d;
+  color: #fee2e2;
+}
+.top-actions {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  gap: 10px;
+}
+
+.download-btn {
+  padding: 8px 14px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.download-btn:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.download-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
