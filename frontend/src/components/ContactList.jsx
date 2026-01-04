@@ -3,11 +3,9 @@ import api from "../utils/api";
 import { ContactContext } from "../context/ContactContext";
 import Button from "./Button";
 import Alert from "./Alert";
-
-
 import EditContactModal from "./EditContactModal";
 
-const ITEMS_PER_PAGE = 3; 
+const ITEMS_PER_PAGE = 3;
 
 const formatDate = (date) =>
   new Date(date).toLocaleString("en-IN", {
@@ -70,8 +68,7 @@ const ContactList = () => {
       setRefreshKey((k) => k + 1);
     };
     window.addEventListener("contactsUpdated", refresh);
-    return () =>
-      window.removeEventListener("contactsUpdated", refresh);
+    return () => window.removeEventListener("contactsUpdated", refresh);
   }, []);
 
   return (
@@ -102,6 +99,7 @@ const ContactList = () => {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Message</th>
                   <th>Created At</th>
                   <th>Last Updated</th>
                   <th>Action</th>
@@ -115,6 +113,7 @@ const ContactList = () => {
                     <td>{contact.name}</td>
                     <td>{contact.email}</td>
                     <td>{contact.phone}</td>
+                    <td>{contact.message || "-"}</td>
                     <td>{formatDate(contact.createdAt)}</td>
                     <td>{formatDate(contact.updatedAt)}</td>
                     <td>
