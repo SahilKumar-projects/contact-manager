@@ -36,3 +36,39 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+
+
+body.dark .modal {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+body.dark .modal input,
+body.dark .modal textarea {
+  background-color: #020617;
+  color: #f8fafc;
+  border: 1px solid #334155;
+}
+
+
+body.dark .modal input::placeholder,
+body.dark .modal textarea::placeholder {
+  color: #94a3b8;
+}
+
+
+body.dark .cancel-btn {
+  background-color: #334155;
+  color: #e5e7eb;
+}
+
+
+body.dark .submit-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+body.dark .submit-btn:disabled {
+  background-color: #475569;
+}
