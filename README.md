@@ -60,27 +60,21 @@ This application allows users to **add, view, update, delete, sort, and paginate
 
 ---
 
-How to Run Locally:
-1.Clone the repository
-   git clone https://github.com/SahilKumar-projects/contact-manager.git
-   cd contact-manager
+## How to Run Locally:
+# 1.Clone the repository
 
-2.Start Backend
+# 2.After cloning the repo:
+  cd contact-manager
+
+# 3.Start Backend:
    cd backend
    npm install
    npm start
 
-3.Start Frontend
+# 4.Start Frontend
    cd frontend
    npm install
     npm run dev
-
-API Endpoints:
-  Method	Endpoint	Description:
-   GET	/api/contacts?page=1	Fetch paginated contacts
-   POST	/api/contacts	Add new contact
-  PUT	/api/contacts/:id	Update contact
-DELETE	/api/contacts/:id	Delete contact
 
  Validations Implemented:
 
@@ -112,8 +106,19 @@ Security & Best Practices:
 
     4.Clean separation of concerns
 
+## Project Screenshots
+
+###  Dashboard
+![Dashboard](assets/dashboard.JPG)
+
+### CRUD operations
+![CRUD](assets/CRUD.JPG)
+
+### Dark Mode
+![Dark Mode](assets/dark-mode.JPG)
+
 Developer:
 
   Sahil Kumar
-  Aspiring Full-Stack / MERN Developer
+  Full-Stack Developer
 
