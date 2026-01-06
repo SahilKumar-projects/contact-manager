@@ -61,17 +61,17 @@ This application allows users to **add, view, update, delete, sort, and paginate
 ---
 
 ## How to Run Locally:
-# 1.Clone the repository
+ 1.Clone the repository
 
-# 2.After cloning the repo:
+ 2.After cloning the repo:
   cd contact-manager
 
-# 3.Start Backend:
+ 3.Start Backend:
    cd backend
    npm install
    npm start
 
-# 4.Start Frontend
+ 4.Start Frontend
    cd frontend
    npm install
     npm run dev
