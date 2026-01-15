@@ -20,22 +20,23 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      select: false, // IMPORTANT
+      select: false,
     },
   },
   { timestamps: true }
 );
 
-/* 🔐 HASH PASSWORD BEFORE SAVE */
+/* ✅ PASSWORD HASH */
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
+
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-/* 🔐 COMPARE PASSWORD */
-UserSchema.methods.comparePassword = function (enteredPassword) {
-  return bcrypt.compare(enteredPassword, this.password);
+/* ✅ PASSWORD COMPARE */
+UserSchema.methods.comparePassword = function (password) {
+  return bcrypt.compare(password, this.password);
 };
 
 module.exports = mongoose.model("User", UserSchema);

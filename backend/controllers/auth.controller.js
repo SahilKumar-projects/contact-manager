@@ -6,10 +6,6 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields required" });
-    }
-
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
@@ -24,11 +20,7 @@ exports.register = async (req, res) => {
     );
 
     res.json({
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user: { id: user._id, name: user.name, email: user.email },
       token,
     });
   } catch (err) {
@@ -36,6 +28,7 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: "Register failed" });
   }
 };
+
 
 /* LOGIN */
 exports.login = async (req, res) => {
