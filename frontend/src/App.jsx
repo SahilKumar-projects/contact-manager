@@ -1,29 +1,15 @@
-import ContactForm from "./components/ContactForm";
-import ContactList from "./components/ContactList";
-import { ContactProvider } from "./context/ContactContext";
-import ThemeToggle from "./components/ThemeToggle";
-import DownloadContacts from "./components/DownloadContacts";
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
-    <ContactProvider>
-      <div className="app-wrapper">
-        <div className="app-card">
-          <h1 className="app-title">Contact Management</h1>
-
-        
-          <div className="top-actions">
-            <ThemeToggle />
-            <DownloadContacts />
-          </div>
-
-          <div className="app-grid">
-            <ContactForm />
-            <ContactList />
-          </div>
-        </div>
-      </div>
-    </ContactProvider>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/" element={<Dashboard />} />
+    </Routes>
   );
 }
 

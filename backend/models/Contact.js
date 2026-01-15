@@ -1,13 +1,38 @@
 const mongoose = require("mongoose");
 
-const contactSchema = new mongoose.Schema(
+const NoteSchema = new mongoose.Schema({
+  text: String,
+  createdAt: {
+    type: Number,
+    default: Date.now,
+  },
+});
+
+const TaskSchema = new mongoose.Schema({
+  text: String,
+  completed: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Number,
+    default: Date.now,
+  },
+});
+
+const ContactSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, minlength: 3 },
-    email: { type: String, required: true },
-    phone: { type: String, required: true },
-    message: { type: String, maxlength: 300 }
+    name: String,
+    email: String,
+    phone: String,
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    notes: [NoteSchema],
+    tasks: [TaskSchema],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Contact", contactSchema);
+module.exports = mongoose.model("Contact", ContactSchema);
