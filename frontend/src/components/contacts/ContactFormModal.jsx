@@ -10,7 +10,6 @@ export default function ContactFormModal({
     name: "",
     email: "",
     phone: "",
-    favorite: false,
   });
 
   useEffect(() => {
@@ -19,87 +18,75 @@ export default function ContactFormModal({
         name: initialData.name || "",
         email: initialData.email || "",
         phone: initialData.phone || "",
-        favorite: initialData.favorite || false,
       });
+    } else {
+      setForm({ name: "", email: "", phone: "" });
     }
-  }, [initialData]);
+  }, [initialData, open]);
 
   if (!open) return null;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.name.trim()) return;
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    onSave({
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!form.name.trim()) {
+      alert("Name is required");
+      return;
+    }
+
+    await onSave({
       ...initialData,
       ...form,
-      id: initialData?.id || Date.now().toString(),
-      voicemails: initialData?.voicemails || [],
-      tasks: initialData?.tasks || [],
-      notes: initialData?.notes || [],
     });
-
-    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-md p-6">
+      <div className="bg-white w-full max-w-md rounded-2xl p-6">
         <h2 className="text-lg font-semibold mb-4">
           {initialData ? "Edit Contact" : "Add Contact"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
-            placeholder="Full name"
-            className="w-full px-4 py-2 border rounded-xl text-sm"
+            name="name"
             value={form.name}
-            onChange={(e) =>
-              setForm({ ...form, name: e.target.value })
-            }
+            onChange={handleChange}
+            placeholder="Full name"
+            className="w-full px-3 py-2 border rounded-xl"
           />
 
           <input
-            placeholder="Email"
-            className="w-full px-4 py-2 border rounded-xl text-sm"
+            name="email"
             value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
+            onChange={handleChange}
+            placeholder="Email"
+            className="w-full px-3 py-2 border rounded-xl"
           />
 
           <input
-            placeholder="Phone"
-            className="w-full px-4 py-2 border rounded-xl text-sm"
+            name="phone"
             value={form.phone}
-            onChange={(e) =>
-              setForm({ ...form, phone: e.target.value })
-            }
+            onChange={handleChange}
+            placeholder="Phone"
+            className="w-full px-3 py-2 border rounded-xl"
           />
 
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={form.favorite}
-              onChange={(e) =>
-                setForm({ ...form, favorite: e.target.checked })
-              }
-            />
-            Mark as favorite
-          </label>
-
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-xl hover:bg-gray-100"
+              className="px-4 py-2 rounded-xl border"
             >
               Cancel
             </button>
-
             <button
               type="submit"
-              className="px-4 py-2 text-sm rounded-xl bg-rose-500 text-white hover:bg-rose-600"
+              className="px-4 py-2 rounded-xl bg-rose-500 text-white"
             >
               Save
             </button>

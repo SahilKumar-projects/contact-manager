@@ -1,75 +1,50 @@
-const Contact = require("../models/Contact");
+const mongoose = require("mongoose");
 
-/* -------- GET ALL -------- */
-exports.getContacts = async (req, res) => {
-  const contacts = await Contact.find().sort({ createdAt: -1 });
-  res.json(contacts);
-};
+const NoteSchema = new mongoose.Schema({
+  text: String,
+  createdAt: {
+    type: Number,
+    default: Date.now,
+  },
+});
 
-/* -------- CREATE -------- */
-exports.createContact = async (req, res) => {
-  const contact = await Contact.create(req.body);
-  res.json(contact);
-};
+const TaskSchema = new mongoose.Schema({
+  text: String,
+  completed: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Number,
+    default: Date.now,
+  },
+});
 
-/* -------- UPDATE -------- */
-exports.updateContact = async (req, res) => {
-  const updated = await Contact.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json(updated);
-};
+const VoicemailSchema = new mongoose.Schema({
+  audioUrl: String,
+  duration: Number,
+  fileSize: Number,
+  mimeType: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-/* -------- DELETE -------- */
-exports.deleteContact = async (req, res) => {
-  await Contact.findByIdAndDelete(req.params.id);
-  res.json({ success: true });
-};
+const ContactSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: String,
+    phone: String,
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    notes: [NoteSchema],
+    tasks: [TaskSchema],
+    voicemails: [VoicemailSchema], // ✅ FIX
+  },
+  { timestamps: true }
+);
 
-/* -------- TOGGLE FAVORITE -------- */
-exports.toggleFavorite = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  contact.favorite = !contact.favorite;
-  await contact.save();
-  res.json(contact);
-};
-
-/* -------- NOTES -------- */
-exports.addNote = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  contact.notes.push(req.body);
-  await contact.save();
-  res.json(contact);
-};
-
-exports.deleteNote = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  contact.notes.splice(req.params.index, 1);
-  await contact.save();
-  res.json(contact);
-};
-
-/* -------- TASKS -------- */
-exports.addTask = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  contact.tasks.push(req.body);
-  await contact.save();
-  res.json(contact);
-};
-
-exports.toggleTask = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  const task = contact.tasks[req.params.index];
-  task.completed = !task.completed;
-  await contact.save();
-  res.json(contact);
-};
-
-exports.deleteTask = async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  contact.tasks.splice(req.params.index, 1);
-  await contact.save();
-  res.json(contact);
-};
+module.exports = mongoose.model("Contact", ContactSchema);

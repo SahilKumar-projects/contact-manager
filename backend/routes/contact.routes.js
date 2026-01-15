@@ -1,20 +1,32 @@
-const router = require("express").Router();
-const ctrl = require("../controllers/contact.controller");
+const express = require("express");
+const router = express.Router();
+const upload = require("../middlewares/upload");
 
-router.get("/", ctrl.getContacts);
-router.post("/", ctrl.createContact);
-router.put("/:id", ctrl.updateContact);
-router.delete("/:id", ctrl.deleteContact);
+const controller = require("../controllers/contact.controller");
 
-router.patch("/:id/favorite", ctrl.toggleFavorite);
+/* CONTACTS */
+router.get("/", controller.getContacts);
+router.post("/", controller.createContact);
+router.put("/:id", controller.updateContact);
+router.delete("/:id", controller.deleteContact);
 
-/* Notes */
-router.post("/:id/notes", ctrl.addNote);
-router.delete("/:id/notes/:index", ctrl.deleteNote);
+/* FAVORITE */
+router.patch("/:id/favorite", controller.toggleFavorite);
 
-/* Tasks */
-router.post("/:id/tasks", ctrl.addTask);
-router.patch("/:id/tasks/:index", ctrl.toggleTask);
-router.delete("/:id/tasks/:index", ctrl.deleteTask);
+/* NOTES */
+router.post("/:id/notes", controller.addNote);
+router.delete("/:id/notes/:index", controller.deleteNote);
+
+/* TASKS */
+router.post("/:id/tasks", controller.addTask);
+router.patch("/:id/tasks/:index", controller.toggleTask);
+router.delete("/:id/tasks/:index", controller.deleteTask);
+
+/* VOICEMAILS ✅ */
+router.post(
+  "/:id/voicemails",
+  upload.single("audio"),
+  controller.uploadVoicemail
+);
 
 module.exports = router;

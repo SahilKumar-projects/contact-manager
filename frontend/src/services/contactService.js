@@ -1,65 +1,53 @@
-const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/contacts`;
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/contacts`;
 
-export const contactService = {
-  /* ---------------- GET ALL ---------------- */
+const contactService = {
   async getAll() {
-    const res = await fetch(BASE_URL, {
-      credentials: "include",
-    });
+    const res = await fetch(BASE_URL);
     if (!res.ok) throw new Error("Failed to fetch contacts");
     return res.json();
   },
 
-  /* ---------------- CREATE ---------------- */
   async create(contact) {
     const res = await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify(contact),
     });
     if (!res.ok) throw new Error("Failed to create contact");
     return res.json();
   },
 
-  /* ---------------- UPDATE ---------------- */
   async update(contact) {
     const res = await fetch(`${BASE_URL}/${contact.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify(contact),
     });
     if (!res.ok) throw new Error("Failed to update contact");
     return res.json();
   },
 
-  /* ---------------- DELETE ---------------- */
   async remove(id) {
     const res = await fetch(`${BASE_URL}/${id}`, {
       method: "DELETE",
-      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to delete contact");
     return true;
   },
 
-  /* ---------------- FAVORITE ---------------- */
   async toggleFavorite(id) {
     const res = await fetch(`${BASE_URL}/${id}/favorite`, {
       method: "PATCH",
-      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to toggle favorite");
     return res.json();
   },
 
-  /* ---------------- NOTES ---------------- */
+  /* ---------- NOTES ---------- */
   async addNote(id, note) {
     const res = await fetch(`${BASE_URL}/${id}/notes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify(note),
     });
     if (!res.ok) throw new Error("Failed to add note");
@@ -69,18 +57,16 @@ export const contactService = {
   async deleteNote(id, index) {
     const res = await fetch(`${BASE_URL}/${id}/notes/${index}`, {
       method: "DELETE",
-      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to delete note");
-    return true;
+    return res.json();
   },
 
-  /* ---------------- TASKS ---------------- */
+  /* ---------- TASKS ---------- */
   async addTask(id, task) {
     const res = await fetch(`${BASE_URL}/${id}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify(task),
     });
     if (!res.ok) throw new Error("Failed to add task");
@@ -90,7 +76,6 @@ export const contactService = {
   async toggleTask(id, index) {
     const res = await fetch(`${BASE_URL}/${id}/tasks/${index}`, {
       method: "PATCH",
-      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to toggle task");
     return res.json();
@@ -99,9 +84,35 @@ export const contactService = {
   async deleteTask(id, index) {
     const res = await fetch(`${BASE_URL}/${id}/tasks/${index}`, {
       method: "DELETE",
-      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to delete task");
-    return true;
+    return res.json();
+  },
+
+  /* ---------- VOICEMAIL ---------- */
+  async uploadVoicemail(id, blob, duration) {
+    const fd = new FormData();
+    fd.append("audio", blob);
+    fd.append("duration", duration);
+
+    const res = await fetch(`${BASE_URL}/${id}/voicemails`, {
+      method: "POST",
+      body: fd,
+    });
+
+    if (!res.ok) throw new Error("Failed to upload voicemail");
+    return res.json();
+  },
+
+  async deleteVoicemail(id, voicemailId) {
+    const res = await fetch(
+      `${BASE_URL}/${id}/voicemails/${voicemailId}`,
+      { method: "DELETE" }
+    );
+
+    if (!res.ok) throw new Error("Failed to delete voicemail");
+    return res.json();
   },
 };
+
+export default contactService;
