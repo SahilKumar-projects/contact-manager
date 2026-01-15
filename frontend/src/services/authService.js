@@ -7,8 +7,11 @@ const authService = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Login failed");
-    return res.json();
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Login failed");
+
+    return result;
   },
 
   async register(data) {
@@ -17,16 +20,27 @@ const authService = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Register failed");
-    return res.json();
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Register failed");
+
+    return result;
   },
 
-  async me(token) {
+  async me() {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token");
+
     const res = await fetch(`${BASE_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Unauthorized");
+
+    return result;
   },
 };
 

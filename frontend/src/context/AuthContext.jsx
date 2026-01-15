@@ -20,9 +20,9 @@ export function AuthProvider({ children }) {
     }
 
     authService
-      .me(token)
-      .then((res) => {
-        setUser(res.user ?? res); // safe for backend variations
+      .me() // ✅ FIXED
+      .then((user) => {
+        setUser(user);
       })
       .catch(() => {
         localStorage.removeItem("token");
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = ({ user, token }) => {
-    if (!token || !user) {
+    if (!user || !token) {
       console.error("Invalid login payload", { user, token });
       return;
     }
