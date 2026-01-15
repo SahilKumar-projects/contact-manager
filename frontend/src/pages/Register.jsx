@@ -1,10 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 import authService from "../services/authService";
 
 export default function Register() {
-  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -20,25 +18,16 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await authService.register({
+      await authService.register({
         name,
         email,
         password,
       });
 
-      // backend must return { user, token }
-      login({
-        user: res.user,
-        token: res.token,
-      });
-
-      navigate("/");
+      // ✅ correct flow: go to login after successful register
+      navigate("/login");
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err.message ||
-          "Registration failed"
-      );
+      setError(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }

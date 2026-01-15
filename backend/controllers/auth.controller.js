@@ -6,42 +6,40 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const exists = await User.findOne({ email });
-    if (exists) {
-      return res.status(400).json({ message: "User already exists" });
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email and password are required",
+      });
     }
 
-    const user = await User.create({ name, email, password });
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    await User.create({ name, email, password });
 
-    res.json({
-      user: { id: user._id, name: user.name, email: user.email },
-      token,
+    res.status(201).json({
+      message: "Registration successful. Please login.",
     });
   } catch (err) {
-    console.error("REGISTER ERROR:", err);
-    res.status(500).json({ message: "Register failed" });
+    res.status(500).json({ message: "Registration failed" });
   }
 };
-
 
 /* LOGIN */
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -52,21 +50,19 @@ exports.login = async (req, res) => {
     );
 
     res.json({
+      token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
       },
-      token,
     });
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
+  } catch {
     res.status(500).json({ message: "Login failed" });
   }
 };
 
 /* ME */
 exports.me = async (req, res) => {
-  const user = await User.findById(req.userId).select("-password");
-  res.json(user);
+  res.json(req.user);
 };

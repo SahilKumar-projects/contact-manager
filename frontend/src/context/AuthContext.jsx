@@ -1,12 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import authService from "../services/authService";
 
-export const AuthContext = createContext({
-  user: null,
-  login: () => {},
-  logout: () => {},
-  loading: true,
-});
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -14,29 +9,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    if (!token) return setLoading(false);
 
     authService
-      .me() // ✅ FIXED
-      .then((user) => {
-        setUser(user);
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-        setUser(null);
-      })
+      .me(token)
+      .then(setUser)
+      .catch(() => localStorage.removeItem("token"))
       .finally(() => setLoading(false));
   }, []);
 
   const login = ({ user, token }) => {
-    if (!user || !token) {
-      console.error("Invalid login payload", { user, token });
-      return;
-    }
-
     localStorage.setItem("token", token);
     setUser(user);
   };
