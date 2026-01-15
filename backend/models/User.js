@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -15,23 +16,26 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+
     password: {
       type: String,
       required: true,
-      select: false,
+      select: false, // IMPORTANT
     },
   },
   { timestamps: true }
 );
 
+/* 🔐 HASH PASSWORD BEFORE SAVE */
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-UserSchema.methods.comparePassword = async function (password) {
-  return bcrypt.compare(password, this.password);
+/* 🔐 COMPARE PASSWORD */
+UserSchema.methods.comparePassword = function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
 };
 
 module.exports = mongoose.model("User", UserSchema);
