@@ -23,9 +23,31 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+     phone: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+    city: {
+      type: String,
+      default: "",
+    },
+    state: {
+      type: String,
+      default: "",
+    },
+    country: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
+
+
 
 /* Hash password */
 UserSchema.pre("save", async function () {
@@ -37,5 +59,7 @@ UserSchema.pre("save", async function () {
 UserSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
+
+
 
 module.exports = mongoose.model("User", UserSchema);

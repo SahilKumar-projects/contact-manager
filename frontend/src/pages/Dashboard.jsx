@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
+import Profile from "../components/profile/Profile";
+import ChangePassword from "../components/profile/ChangePassword";
 
 /* Auth */
 import { AuthContext } from "../context/AuthContext";
@@ -37,10 +39,6 @@ export default function Dashboard() {
 
   const isMobile = window.innerWidth < 768;
 
-  /* ---------------- PROTECT ROUTE ---------------- */
-  if (authLoading) return null;
-  if (!user) return <Navigate to="/login" />;
-
   /* ---------------- LOAD CONTACTS ---------------- */
   useEffect(() => {
     async function load() {
@@ -63,6 +61,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     }
+
     load();
   }, []);
 
@@ -221,6 +220,10 @@ export default function Dashboard() {
     setSelected(normalized);
   };
 
+  /* ---------------- AUTH GUARD (FIXED) ---------------- */
+  if (authLoading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+
   /* ---------------- LOADING UI ---------------- */
   if (loading) {
     return (
@@ -243,43 +246,53 @@ export default function Dashboard() {
             <Sidebar active={section} onChange={setSection} />
           )}
 
-          <ContactList
-            contacts={filteredContacts}
-            selected={selected}
-            search={search}
-            onSearchChange={setSearch}
-            onSelect={(c) => {
-              setSelected(c);
-              if (isMobile) setDrawerOpen(true);
-            }}
-            onAddClick={() => {
-              setEditingContact(null);
-              setModalOpen(true);
-            }}
-            onToggleFavorite={handleToggleFavorite}
-          />
+         {/* MAIN CONTENT */}
+{section === "contacts" && (
+  <>
+    <ContactList
+      contacts={filteredContacts}
+      selected={selected}
+      search={search}
+      onSearchChange={setSearch}
+      onSelect={(c) => {
+        setSelected(c);
+        if (isMobile) setDrawerOpen(true);
+      }}
+      onAddClick={() => {
+        setEditingContact(null);
+        setModalOpen(true);
+      }}
+      onToggleFavorite={handleToggleFavorite}
+    />
 
-          {!isMobile && (
-            <ContactDetails
-              contact={selected}
-              onEdit={() => {
-                setEditingContact(selected);
-                setModalOpen(true);
-              }}
-              onDelete={handleDelete}
-              onAddNote={handleAddNote}
-              onDeleteNote={handleDeleteNote}
-              onAddTask={handleAddTask}
-              onToggleTask={handleToggleTask}
-              onDeleteTask={handleDeleteTask}
-              onUploadVoicemail={handleUploadVoicemail}
-              onDeleteVoicemail={handleDeleteVoicemail}
-            />
-          )}
+    {!isMobile && (
+      <ContactDetails
+        contact={selected}
+        onEdit={() => {
+          setEditingContact(selected);
+          setModalOpen(true);
+        }}
+        onDelete={handleDelete}
+        onAddNote={handleAddNote}
+        onDeleteNote={handleDeleteNote}
+        onAddTask={handleAddTask}
+        onToggleTask={handleToggleTask}
+        onDeleteTask={handleDeleteTask}
+        onUploadVoicemail={handleUploadVoicemail}
+        onDeleteVoicemail={handleDeleteVoicemail}
+      />
+    )}
+  </>
+)}
+
+{section === "profile" && <Profile />}
+
+{section === "password" && <ChangePassword />}
+
         </div>
       </div>
 
-      {isMobile && (
+      {isMobile && section === "contacts" && (
         <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
           <ContactDetails
             contact={selected}

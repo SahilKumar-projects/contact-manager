@@ -9,7 +9,7 @@ export default {
     });
 
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message);
+    if (!res.ok) throw new Error(json.message || "Registration failed");
     return json;
   },
 
@@ -21,14 +21,49 @@ export default {
     });
 
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message);
+    if (!res.ok) throw new Error(json.message || "Login failed");
     return json;
   },
 
+  async updateProfile(data, token) {
+    const res = await fetch(`${BASE_URL}/auth/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || "Failed to update profile");
+    return json;
+  }, 
   async me(token) {
     const res = await fetch(`${BASE_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return res.json();
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || "Unauthorized");
+    return json;
   },
+
+  async changePassword(data, token) {
+  const res = await fetch(`${BASE_URL}/auth/change-password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message);
+  return json;
+}
+
 };
