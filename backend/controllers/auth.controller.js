@@ -1,145 +1,169 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import authService from "../../services/authService";
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-export default function Profile() {
-  const { user } = useContext(AuthContext);
-  const token = localStorage.getItem("token");
+/* =========================
+   REGISTER
+========================= */
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
 
-  const [form, setForm] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-  });
-  
-
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      await authService.updateProfile(form, token);
-      setMessage("Profile updated successfully");
-    } catch (err) {
-      setMessage(err.message || "Failed to update profile");
-    } finally {
-      setLoading(false);
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email and password are required",
+      });
     }
-  };
 
-  return (
-    <div className="flex-1 bg-gray-50 rounded-2xl p-6 overflow-y-auto">
-      
-      {/* HEADER */}
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        Profile Information
-      </h2>
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({
+        message: "Email already registered",
+      });
+    }
 
-      {/* FORM CARD */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-2xl border p-5 space-y-4 max-w-3xl"
-      >
-        {/* BASIC INFO */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="Full Name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          <Input
-            label="Email"
-            name="email"
-            value={form.email}
-            disabled
-          />
-          <Input
-            label="Phone"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-          />
-          <Input
-            label="City"
-            name="city"
-            value={form.city}
-            onChange={handleChange}
-          />
-        </div>
+    await User.create({ name, email, password });
 
-        {/* ADDRESS */}
-        <div>
-          <Input
-            label="Address"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-          />
-        </div>
+    return res.status(201).json({
+      message: "Registration successful. Please login.",
+    });
+  } catch (err) {
+    console.error("REGISTER ERROR:", err);
+    return res.status(500).json({
+      message: "Registration failed",
+    });
+  }
+};
 
-        {/* LOCATION */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="State"
-            name="state"
-            value={form.state}
-            onChange={handleChange}
-          />
-          <Input
-            label="Country"
-            name="country"
-            value={form.country}
-            onChange={handleChange}
-          />
-        </div>
+/* =========================
+   LOGIN
+========================= */
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-        {/* MESSAGE */}
-        {message && (
-          <div className="text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
-            {message}
-          </div>
-        )}
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
 
-        {/* ACTION */}
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-5 py-2 rounded-lg bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 disabled:opacity-60"
-          >
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-}
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
 
-/* ---------- INPUT COMPONENT ---------- */
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
 
-function Input({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-gray-500">
-        {label}
-      </label>
-      <input
-        {...props}
-        className="px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 disabled:bg-gray-100"
-      />
-    </div>
-  );
-}
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    return res.status(500).json({
+      message: "Login failed",
+    });
+  }
+};
+
+/* =========================
+   CURRENT USER
+========================= */
+exports.me = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error("ME ERROR:", err);
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+};
+
+/* =========================
+   UPDATE PROFILE
+========================= */
+exports.updateProfile = async (req, res) => {
+  try {
+    const updated = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        name: req.body.name,
+        phone: req.body.phone,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        country: req.body.country,
+      },
+      { new: true }
+    ).select("-password");
+
+    res.json(updated);
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+    res.status(500).json({
+      message: "Failed to update profile",
+    });
+  }
+};
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        message: "Current password and new password are required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "New password must be at least 6 characters",
+      });
+    }
+
+    const user = await User.findById(req.userId).select("+password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Current password is incorrect",
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      message: "Password changed successfully",
+    });
+  } catch (err) {
+    console.error("CHANGE PASSWORD ERROR:", err);
+    res.status(500).json({
+      message: "Failed to change password",
+    });
+  }
+};
