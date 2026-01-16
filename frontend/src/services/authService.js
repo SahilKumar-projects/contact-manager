@@ -1,6 +1,6 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export default {
+const authService = {
   async register(data) {
     const res = await fetch(`${BASE_URL}/auth/register`, {
       method: "POST",
@@ -9,7 +9,7 @@ export default {
     });
 
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message || "Registration failed");
+    if (!res.ok) throw new Error(json.message);
     return json;
   },
 
@@ -21,8 +21,19 @@ export default {
     });
 
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message || "Login failed");
+    if (!res.ok) throw new Error(json.message);
     return json;
+  },
+
+  async me(token) {
+    const res = await fetch(`${BASE_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Unauthorized");
+    return res.json();
   },
 
   async updateProfile(data, token) {
@@ -36,34 +47,24 @@ export default {
     });
 
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message || "Failed to update profile");
-    return json;
-  }, 
-  async me(token) {
-    const res = await fetch(`${BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || "Unauthorized");
+    if (!res.ok) throw new Error(json.message);
     return json;
   },
 
   async changePassword(data, token) {
-  const res = await fetch(`${BASE_URL}/auth/change-password`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
+    const res = await fetch(`${BASE_URL}/auth/change-password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message);
-  return json;
-}
-
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message);
+    return json;
+  },
 };
+
+export default authService;

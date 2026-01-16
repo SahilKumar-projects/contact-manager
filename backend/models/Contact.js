@@ -14,20 +14,26 @@ const TaskSchema = new mongoose.Schema({
 const VoicemailSchema = new mongoose.Schema({
   audioUrl: String,
   duration: Number,
-  fileSize: Number,
-  mimeType: String,
   createdAt: { type: Date, default: Date.now },
 });
 
 const ContactSchema = new mongoose.Schema(
   {
-    name: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
+    name: { type: String, required: true },
     email: String,
     phone: String,
     favorite: { type: Boolean, default: false },
+
     notes: [NoteSchema],
     tasks: [TaskSchema],
-    voicemails: [VoicemailSchema], // ✅ REQUIRED
+    voicemails: [VoicemailSchema],
   },
   { timestamps: true }
 );
