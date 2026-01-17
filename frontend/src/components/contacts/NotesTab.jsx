@@ -21,7 +21,7 @@ export default function NotesTab({
         <button
           onClick={() => {
             if (!input.trim()) return;
-            onAddNote(contactId, input);
+            onAddNote(contactId, { text: input }); // ✅ object
             setInput("");
           }}
           className="px-4 py-2 bg-rose-500 text-white rounded-xl"
@@ -32,11 +32,11 @@ export default function NotesTab({
 
       {/* LIST */}
       {notes.length ? (
-        notes.map((note, i) => (
+        notes.map((note) => (
           <Item
-            key={i}
-            text={note}
-            onDelete={() => onDeleteNote(contactId, i)}
+            key={note._id}
+            text={note.text} // ✅ correct
+            onDelete={() => onDeleteNote(contactId, note._id)} // ✅ id
           />
         ))
       ) : (

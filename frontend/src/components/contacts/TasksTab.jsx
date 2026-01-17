@@ -3,7 +3,7 @@ import { useState } from "react";
 export default function TasksTab({
   tasks = [],
   onAddTask,
-  onDeleteTask,
+  onToggleTask,
   contactId,
 }) {
   const [input, setInput] = useState("");
@@ -21,7 +21,7 @@ export default function TasksTab({
         <button
           onClick={() => {
             if (!input.trim()) return;
-            onAddTask(contactId, input);
+            onAddTask(contactId, { text: input }); // ✅ correct
             setInput("");
           }}
           className="px-4 py-2 bg-rose-500 text-white rounded-xl"
@@ -32,11 +32,12 @@ export default function TasksTab({
 
       {/* LIST */}
       {tasks.length ? (
-        tasks.map((task, i) => (
+        tasks.map((task) => (
           <Item
-            key={i}
-            text={task}
-            onDelete={() => onDeleteTask(contactId, i)}
+            key={task._id}
+            text={task.text}
+            completed={task.completed}
+            onToggle={() => onToggleTask(contactId, task._id)}
           />
         ))
       ) : (
@@ -48,15 +49,17 @@ export default function TasksTab({
 
 /* ---------- helpers ---------- */
 
-function Item({ text, onDelete }) {
+function Item({ text, completed, onToggle }) {
   return (
-    <div className="flex justify-between bg-white rounded-xl px-4 py-2 mb-2">
-      <span>{text}</span>
+    <div className="flex justify-between items-center bg-white rounded-xl px-4 py-2 mb-2">
+      <span className={completed ? "line-through text-gray-400" : ""}>
+        {text}
+      </span>
       <button
-        onClick={onDelete}
+        onClick={onToggle}
         className="text-rose-500 text-sm"
       >
-        Delete
+        {completed ? "Undo" : "Done"}
       </button>
     </div>
   );

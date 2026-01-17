@@ -119,64 +119,79 @@ export default function Dashboard() {
     setSelected(normalized);
   };
 
-  /* ---------------- NOTES ---------------- */
-  const handleAddNote = async (id, text) => {
-    const updated = await contactService.addNote(id, {
-      text,
-      createdAt: Date.now(),
-    });
-    const normalized = { ...updated, id: updated._id };
+ /* ---------------- NOTES ---------------- */
+const handleAddNote = async (contactId, data) => {
+  const notes = await contactService.addNote(contactId, data);
 
-    setContacts((prev) =>
-      prev.map((c) => (c.id === normalized.id ? normalized : c))
-    );
-    setSelected(normalized);
-  };
+  setContacts((prev) =>
+    prev.map((c) =>
+      c.id === contactId ? { ...c, notes } : c
+    )
+  );
 
-  const handleDeleteNote = async (id, index) => {
-    const updated = await contactService.deleteNote(id, index);
-    const normalized = { ...updated, id: updated._id };
+  setSelected((prev) =>
+    prev && prev.id === contactId ? { ...prev, notes } : prev
+  );
+};
 
-    setContacts((prev) =>
-      prev.map((c) => (c.id === normalized.id ? normalized : c))
-    );
-    setSelected(normalized);
-  };
+const handleDeleteNote = async (contactId, noteId) => {
+  const notes = await contactService.deleteNote(contactId, noteId);
 
-  /* ---------------- TASKS ---------------- */
-  const handleAddTask = async (id, text) => {
-    const updated = await contactService.addTask(id, {
-      text,
-      completed: false,
-      createdAt: Date.now(),
-    });
-    const normalized = { ...updated, id: updated._id };
+  setContacts((prev) =>
+    prev.map((c) =>
+      c.id === contactId ? { ...c, notes } : c
+    )
+  );
 
-    setContacts((prev) =>
-      prev.map((c) => (c.id === normalized.id ? normalized : c))
-    );
-    setSelected(normalized);
-  };
+  setSelected((prev) =>
+    prev && prev.id === contactId ? { ...prev, notes } : prev
+  );
+};
 
-  const handleToggleTask = async (id, index) => {
-    const updated = await contactService.toggleTask(id, index);
-    const normalized = { ...updated, id: updated._id };
 
-    setContacts((prev) =>
-      prev.map((c) => (c.id === normalized.id ? normalized : c))
-    );
-    setSelected(normalized);
-  };
+ /* ---------------- TASKS ---------------- */
+const handleAddTask = async (contactId, data) => {
+  const tasks = await contactService.addTask(contactId, data);
 
-  const handleDeleteTask = async (id, index) => {
-    const updated = await contactService.deleteTask(id, index);
-    const normalized = { ...updated, id: updated._id };
+  setContacts((prev) =>
+    prev.map((c) =>
+      c.id === contactId ? { ...c, tasks } : c
+    )
+  );
 
-    setContacts((prev) =>
-      prev.map((c) => (c.id === normalized.id ? normalized : c))
-    );
-    setSelected(normalized);
-  };
+  setSelected((prev) =>
+    prev && prev.id === contactId ? { ...prev, tasks } : prev
+  );
+};
+
+const handleToggleTask = async (contactId, taskId) => {
+  const updatedTask = await contactService.toggleTask(contactId, taskId);
+
+  setContacts((prev) =>
+    prev.map((c) =>
+      c.id === contactId
+        ? {
+            ...c,
+            tasks: c.tasks.map((t) =>
+              t._id === updatedTask._id ? updatedTask : t
+            ),
+          }
+        : c
+    )
+  );
+
+  setSelected((prev) =>
+    prev && prev.id === contactId
+      ? {
+          ...prev,
+          tasks: prev.tasks.map((t) =>
+            t._id === updatedTask._id ? updatedTask : t
+          ),
+        }
+      : prev
+  );
+};
+
 
   /* ---------------- VOICEMAILS ---------------- */
   const handleUploadVoicemail = async (contactId, file, duration) => {
