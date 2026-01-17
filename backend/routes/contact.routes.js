@@ -10,5 +10,14 @@ router.get("/", controller.getContacts);
 router.post("/", controller.createContact);
 router.put("/:id", controller.updateContact);
 router.delete("/:id", controller.deleteContact);
-router.patch("/:id/favorite",controller.toggleFavorite);
+router.patch("/:id/favorite", controller.toggleFavorite);
+
+// NOTES
+router.post("/:id/notes", controller.addNote);
+router.delete("/:id/notes/:noteId", controller.deleteNote);
+
+// TASKS
+router.post("/:id/tasks", controller.addTask);
+router.patch("/:id/tasks/:taskId", controller.toggleTask);
+
 module.exports = router;
