@@ -8,6 +8,7 @@ exports.getContacts = async (req, res) => {
     });
     res.json(contacts);
   } catch (err) {
+    console.error("GET CONTACTS ERROR:", err);
     res.status(500).json({ message: "Failed to fetch contacts" });
   }
 };
@@ -20,7 +21,8 @@ exports.createContact = async (req, res) => {
       user: req.userId,
     });
     res.status(201).json(contact);
-  } catch {
+  } catch (err) {
+    console.error("CREATE CONTACT ERROR:", err);
     res.status(500).json({ message: "Failed to create contact" });
   }
 };
@@ -33,8 +35,14 @@ exports.updateContact = async (req, res) => {
       req.body,
       { new: true }
     );
+
+    if (!contact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
     res.json(contact);
-  } catch {
+  } catch (err) {
+    console.error("UPDATE CONTACT ERROR:", err);
     res.status(500).json({ message: "Failed to update contact" });
   }
 };
@@ -42,24 +50,40 @@ exports.updateContact = async (req, res) => {
 /* DELETE CONTACT */
 exports.deleteContact = async (req, res) => {
   try {
-    await Contact.findOneAndDelete({
+    const deleted = await Contact.findOneAndDelete({
       _id: req.params.id,
       user: req.userId,
     });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
     res.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error("DELETE CONTACT ERROR:", err);
     res.status(500).json({ message: "Failed to delete contact" });
   }
 };
 
 /* TOGGLE FAVORITE */
 exports.toggleFavorite = async (req, res) => {
-  const contact = await Contact.findOne({
-    _id: req.params.id,
-    user: req.userId,
-  });
+  try {
+    const contact = await Contact.findOne({
+      _id: req.params.id,
+      user: req.userId,
+    });
 
-  contact.favorite = !contact.favorite;
-  await contact.save();
-  res.json(contact);
+    if (!contact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    contact.favorite = !contact.favorite;
+    await contact.save();
+
+    res.json(contact);
+  } catch (err) {
+    console.error("TOGGLE FAVORITE ERROR:", err);
+    res.status(500).json({ message: "Failed to toggle favorite" });
+  }
 };
