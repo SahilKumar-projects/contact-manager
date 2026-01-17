@@ -134,73 +134,64 @@ export default function ContactDetails({
             )}
           </>
         )}
+{/* TASKS */}
+{activeTab === "Tasks" && (
+  <>
+    <div className="flex gap-2 mb-4">
+      <input
+        value={taskInput}
+        onChange={(e) => setTaskInput(e.target.value)}
+        placeholder="Add a task"
+        className="flex-1 px-3 py-2 border rounded-xl"
+      />
+      <button
+        onClick={() => {
+          if (!taskInput.trim()) return;
+          onAddTask(contact.id, { text: taskInput });
+          setTaskInput("");
+        }}
+        className="px-3 py-2 bg-rose-500 text-white rounded-xl"
+      >
+        Add
+      </button>
+    </div>
 
-        {/* TASKS */}
-        {activeTab === "Tasks" && (
-          <>
-            <div className="flex gap-2 mb-4">
-              <input
-                value={taskInput}
-                onChange={(e) => setTaskInput(e.target.value)}
-                placeholder="Add a task"
-                className="flex-1 px-3 py-2 border rounded-xl"
-              />
-              <button
-                onClick={() => {
-                  if (!taskInput.trim()) return;
-                  onAddTask(contact.id, taskInput);
-                  setTaskInput("");
-                }}
-                className="px-3 py-2 bg-rose-500 text-white rounded-xl"
-              >
-                Add
-              </button>
+    {contact.tasks?.length ? (
+      contact.tasks.map((task) => (
+        <div
+          key={task._id}
+          className="flex items-start gap-3 bg-white rounded-xl px-4 py-2 mb-2"
+        >
+          <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={() =>
+              onToggleTask(contact.id, task._id)
+            }
+          />
+
+          <div className="flex-1">
+            <div
+              className={`text-sm ${
+                task.completed
+                  ? "line-through text-gray-400"
+                  : ""
+              }`}
+            >
+              {task.text}
             </div>
+            <div className="text-xs text-gray-400">
+              {new Date(task.createdAt).toLocaleString()}
+            </div>
+          </div>
+        </div>
+      ))
+    ) : (
+      <Empty text="No tasks yet" />
+    )}
+  </>
+)}
 
-            {contact.tasks?.length ? (
-              contact.tasks.map((task, index) => (
-                <div
-                  key={task._id || index}
-                  className="flex items-start gap-3 bg-white rounded-xl px-4 py-2 mb-2"
-                >
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() =>
-                      onToggleTask(contact.id, index)
-                    }
-                  />
-
-                  <div className="flex-1">
-                    <div
-                      className={`text-sm ${
-                        task.completed
-                          ? "line-through text-gray-400"
-                          : ""
-                      }`}
-                    >
-                      {task.text}
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(task.createdAt).toLocaleString()}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      onDeleteTask(contact.id, index)
-                    }
-                    className="text-rose-500 text-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))
-            ) : (
-              <Empty text="No tasks yet" />
-            )}
-          </>
-        )}
 
        {/* VOICEMAILS */}
 {activeTab === "Voicemails" && (

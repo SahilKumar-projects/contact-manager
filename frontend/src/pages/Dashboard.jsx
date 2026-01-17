@@ -27,7 +27,6 @@ export default function Dashboard() {
 
   /* ---------------- STATE ---------------- */
   const [section, setSection] = useState("contacts");
-
   const [contacts, setContacts] = useState([]);
   const [selected, setSelected] = useState(null);
 
@@ -119,79 +118,77 @@ export default function Dashboard() {
     setSelected(normalized);
   };
 
- /* ---------------- NOTES ---------------- */
-const handleAddNote = async (contactId, data) => {
-  const notes = await contactService.addNote(contactId, data);
+  /* ---------------- NOTES ---------------- */
+  const handleAddNote = async (contactId, data) => {
+    const notes = await contactService.addNote(contactId, data);
 
-  setContacts((prev) =>
-    prev.map((c) =>
-      c.id === contactId ? { ...c, notes } : c
-    )
-  );
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === contactId ? { ...c, notes } : c
+      )
+    );
 
-  setSelected((prev) =>
-    prev && prev.id === contactId ? { ...prev, notes } : prev
-  );
-};
+    setSelected((prev) =>
+      prev && prev.id === contactId ? { ...prev, notes } : prev
+    );
+  };
 
-const handleDeleteNote = async (contactId, noteId) => {
-  const notes = await contactService.deleteNote(contactId, noteId);
+  const handleDeleteNote = async (contactId, noteId) => {
+    const notes = await contactService.deleteNote(contactId, noteId);
 
-  setContacts((prev) =>
-    prev.map((c) =>
-      c.id === contactId ? { ...c, notes } : c
-    )
-  );
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === contactId ? { ...c, notes } : c
+      )
+    );
 
-  setSelected((prev) =>
-    prev && prev.id === contactId ? { ...prev, notes } : prev
-  );
-};
+    setSelected((prev) =>
+      prev && prev.id === contactId ? { ...prev, notes } : prev
+    );
+  };
 
+  /* ---------------- TASKS ---------------- */
+  const handleAddTask = async (contactId, data) => {
+    const tasks = await contactService.addTask(contactId, data);
 
- /* ---------------- TASKS ---------------- */
-const handleAddTask = async (contactId, data) => {
-  const tasks = await contactService.addTask(contactId, data);
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === contactId ? { ...c, tasks } : c
+      )
+    );
 
-  setContacts((prev) =>
-    prev.map((c) =>
-      c.id === contactId ? { ...c, tasks } : c
-    )
-  );
+    setSelected((prev) =>
+      prev && prev.id === contactId ? { ...prev, tasks } : prev
+    );
+  };
 
-  setSelected((prev) =>
-    prev && prev.id === contactId ? { ...prev, tasks } : prev
-  );
-};
+  const handleToggleTask = async (contactId, taskId) => {
+    const updatedTask = await contactService.toggleTask(contactId, taskId);
 
-const handleToggleTask = async (contactId, taskId) => {
-  const updatedTask = await contactService.toggleTask(contactId, taskId);
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === contactId
+          ? {
+              ...c,
+              tasks: c.tasks.map((t) =>
+                t._id === updatedTask._id ? updatedTask : t
+              ),
+            }
+          : c
+      )
+    );
 
-  setContacts((prev) =>
-    prev.map((c) =>
-      c.id === contactId
+    setSelected((prev) =>
+      prev && prev.id === contactId
         ? {
-            ...c,
-            tasks: c.tasks.map((t) =>
+            ...prev,
+            tasks: prev.tasks.map((t) =>
               t._id === updatedTask._id ? updatedTask : t
             ),
           }
-        : c
-    )
-  );
-
-  setSelected((prev) =>
-    prev && prev.id === contactId
-      ? {
-          ...prev,
-          tasks: prev.tasks.map((t) =>
-            t._id === updatedTask._id ? updatedTask : t
-          ),
-        }
-      : prev
-  );
-};
-
+        : prev
+    );
+  };
 
   /* ---------------- VOICEMAILS ---------------- */
   const handleUploadVoicemail = async (contactId, file, duration) => {
@@ -235,7 +232,7 @@ const handleToggleTask = async (contactId, taskId) => {
     setSelected(normalized);
   };
 
-  /* ---------------- AUTH GUARD (FIXED) ---------------- */
+  /* ---------------- AUTH GUARD ---------------- */
   if (authLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
@@ -261,49 +258,45 @@ const handleToggleTask = async (contactId, taskId) => {
             <Sidebar active={section} onChange={setSection} />
           )}
 
-         {/* MAIN CONTENT */}
-{section === "contacts" && (
-  <>
-    <ContactList
-      contacts={filteredContacts}
-      selected={selected}
-      search={search}
-      onSearchChange={setSearch}
-      onSelect={(c) => {
-        setSelected(c);
-        if (isMobile) setDrawerOpen(true);
-      }}
-      onAddClick={() => {
-        setEditingContact(null);
-        setModalOpen(true);
-      }}
-      onToggleFavorite={handleToggleFavorite}
-    />
+          {section === "contacts" && (
+            <>
+              <ContactList
+                contacts={filteredContacts}
+                selected={selected}
+                search={search}
+                onSearchChange={setSearch}
+                onSelect={(c) => {
+                  setSelected(c);
+                  if (isMobile) setDrawerOpen(true);
+                }}
+                onAddClick={() => {
+                  setEditingContact(null);
+                  setModalOpen(true);
+                }}
+                onToggleFavorite={handleToggleFavorite}
+              />
 
-    {!isMobile && (
-      <ContactDetails
-        contact={selected}
-        onEdit={() => {
-          setEditingContact(selected);
-          setModalOpen(true);
-        }}
-        onDelete={handleDelete}
-        onAddNote={handleAddNote}
-        onDeleteNote={handleDeleteNote}
-        onAddTask={handleAddTask}
-        onToggleTask={handleToggleTask}
-        onDeleteTask={handleDeleteTask}
-        onUploadVoicemail={handleUploadVoicemail}
-        onDeleteVoicemail={handleDeleteVoicemail}
-      />
-    )}
-  </>
-)}
+              {!isMobile && (
+                <ContactDetails
+                  contact={selected}
+                  onEdit={() => {
+                    setEditingContact(selected);
+                    setModalOpen(true);
+                  }}
+                  onDelete={handleDelete}
+                  onAddNote={handleAddNote}
+                  onDeleteNote={handleDeleteNote}
+                  onAddTask={handleAddTask}
+                  onToggleTask={handleToggleTask}
+                  onUploadVoicemail={handleUploadVoicemail}
+                  onDeleteVoicemail={handleDeleteVoicemail}
+                />
+              )}
+            </>
+          )}
 
-{section === "profile" && <Profile />}
-
-{section === "password" && <ChangePassword />}
-
+          {section === "profile" && <Profile />}
+          {section === "password" && <ChangePassword />}
         </div>
       </div>
 
@@ -320,7 +313,6 @@ const handleToggleTask = async (contactId, taskId) => {
             onDeleteNote={handleDeleteNote}
             onAddTask={handleAddTask}
             onToggleTask={handleToggleTask}
-            onDeleteTask={handleDeleteTask}
             onUploadVoicemail={handleUploadVoicemail}
             onDeleteVoicemail={handleDeleteVoicemail}
           />
