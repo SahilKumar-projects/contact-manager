@@ -16,8 +16,6 @@ const UserSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
-
-    /* Profile fields */
     phone: String,
     address: String,
     city: String,
@@ -27,11 +25,10 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* HASH PASSWORD */
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+/* HASH PASSWORD — MONGOOSE 9 SAFE */
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
 /* COMPARE PASSWORD */
