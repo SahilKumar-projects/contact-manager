@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -20,12 +19,11 @@ exports.register = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    // ✅ DO NOT hash here (model handles it)
     await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,
     });
 
     res.status(201).json({
@@ -102,7 +100,7 @@ exports.changePassword = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-    user.password = newPassword;
+    user.password = newPassword; // model hashes it
     await user.save();
 
     res.json({ message: "Password changed successfully" });
