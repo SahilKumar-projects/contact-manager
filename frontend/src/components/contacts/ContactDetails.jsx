@@ -125,7 +125,7 @@ export default function ContactDetails({
                   text={note.text}
                   date={note.createdAt}
                   onDelete={() =>
-                    onDeleteNote(contact.id, index)
+                    onDeleteNote(contact.id, note._id)
                   }
                 />
               ))
