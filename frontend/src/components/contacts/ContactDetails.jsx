@@ -109,7 +109,7 @@ export default function ContactDetails({
               <button
                 onClick={() => {
                   if (!noteInput.trim()) return;
-                  onAddNote(contact.id, noteInput);
+                  onAddNote(contact.id, {text: noteInput});
                   setNoteInput("");
                 }}
                 className="px-3 py-2 bg-rose-500 text-white rounded-xl"
