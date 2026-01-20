@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
       });
     }
 
-    // ✅ DO NOT hash here (model handles it)
+    //  DO NOT hash here (model handles it)
     await User.create({
       name,
       email,
